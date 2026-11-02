@@ -1,0 +1,53 @@
+# FILE: backend/src/main/resources/application.yml
+# WHAT IT DOES: Configures the backend, PostgreSQL, Flyway, Spring AI, request limits, and local binding.
+# ROLE IN THE PROJECT: Keeps runtime settings in one file while secrets and deployment-specific values come from environment variables.
+# IF YOU REMOVE THIS FILE: The backend loses its datasource, migration, server, and AI client configuration.
+# DEPENDS ON: Environment variables documented in .env.example.
+# USED BY: Spring Boot at application startup.
+# KEY FUNCTIONS: Property groups configure server, datasource, JPA, Flyway, AI, and CORS.
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: interview-prep-platform
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://127.0.0.1:5432/interview_prep}
+    username: ${DB_USERNAME:interview_prep_app}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+  ai:
+    retry:
+      max-attempts: 1
+    openai:
+      base-url: ${LLM_BASE_URL:https://api.openai.com/v1}
+      api-key: ${LLM_API_KEY:not-configured}
+      timeout: 8s
+      max-retries: 0
+      chat:
+        model: ${LLM_MODEL:gpt-4o-mini}
+        max-tokens: 2000
+
+server:
+  address: 127.0.0.1
+  port: 8080
+  max-http-request-header-size: 16KB
+  tomcat:
+    max-http-form-post-size: 128KB
+
+app:
+  frontend-origin: ${FRONTEND_ORIGIN:http://127.0.0.1:3000}
+  request:
+    max-body-bytes: 131072
+  rate-limit:
+    requests-per-minute: 10
+    max-clients: 4096
+  ai:
+    provider-attempts: 2
+    format-attempts: 2
+    retry-initial-delay-milliseconds: 200

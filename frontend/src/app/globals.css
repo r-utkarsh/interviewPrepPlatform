@@ -1,0 +1,22 @@
+/**
+ * FILE: frontend/src/app/globals.css
+ * WHAT IT DOES: Loads Tailwind CSS and sets the base page colors and font.
+ * ROLE IN THE PROJECT: Provides shared styling for every frontend route.
+ * IF YOU REMOVE THIS FILE: The root layout loses the project's global styles.
+ * DEPENDS ON: Tailwind CSS and the browser CSS engine.
+ * USED BY: frontend/src/app/layout.tsx.
+ * KEY FUNCTIONS: None; this file defines global CSS rules.
+ */
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}

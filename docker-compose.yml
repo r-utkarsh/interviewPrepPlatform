@@ -1,0 +1,31 @@
+# FILE: docker-compose.yml
+# WHAT IT DOES: Runs the local PostgreSQL database with a restricted application role.
+# ROLE IN THE PROJECT: Provides the database used by the backend and its integration tests.
+# IF YOU REMOVE THIS FILE: The owner must install and configure PostgreSQL manually.
+# DEPENDS ON: .env values and db/init/10-create-app-role.sh.
+# USED BY: The owner through Docker Compose.
+# KEY FUNCTIONS: The db service starts PostgreSQL, initializes the app role, and exposes it only on loopback.
+
+services:
+  db:
+    image: postgres:18.6-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
+      POSTGRES_APP_USER: ${POSTGRES_APP_USER:?Set POSTGRES_APP_USER in .env}
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD:?Set POSTGRES_APP_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./db/init/10-create-app-role.sh:/docker-entrypoint-initdb.d/10-create-app-role.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres_data:

@@ -1,0 +1,23 @@
+# FILE: .gitignore
+# WHAT IT DOES: Keeps local secrets, build output, caches, and editor files out of Git.
+# ROLE IN THE PROJECT: Prevents credentials and generated files from being committed.
+# IF YOU REMOVE THIS FILE: .env, node_modules, .next, and target can appear in Git status.
+# DEPENDS ON: Git ignore rules.
+# USED BY: Git.
+# KEY FUNCTIONS: None; each line names an ignored path pattern.
+
+.env
+.env.*
+!.env.example
+.next/
+node_modules/
+out/
+coverage/
+target/
+.mvn/wrapper/dists/
+.mvn/wrapper/maven-wrapper.jar
+.idea/
+.vscode/
+*.log
+Thumbs.db
+.DS_Store
